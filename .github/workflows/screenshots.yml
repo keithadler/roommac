@@ -1,0 +1,18 @@
+name: Screenshots
+on: workflow_dispatch
+jobs:
+  render:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the app bundle
+        run: ARCHS=arm64-apple-macosx ./build-app.sh
+      - name: Render every window from demo data
+        run: |
+          mkdir -p out
+          "build/Room for Mac.app/Contents/MacOS/RoomMac" screenshots out
+          ls -la out out/promo 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: out

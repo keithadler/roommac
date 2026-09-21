@@ -1,0 +1,37 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. 1.0.0 (must match Info.plist)"
+        required: true
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Version must match Info.plist
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          plist=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Info.plist)
+          [ "$plist" = "$VERSION" ] || { echo "Info.plist says $plist, you asked for $VERSION"; exit 1; }
+      - name: Build universal app and DMG
+        run: ./make-dmg.sh
+      - name: Smoke test the built binary
+        run: |
+          "build/Room for Mac.app/Contents/MacOS/RoomMac" version
+          "build/Room for Mac.app/Contents/MacOS/RoomMac" help > /dev/null
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          gh release create "v$VERSION" "build/Room-for-Mac-$VERSION.dmg" \
+            --title "Room for Mac $VERSION" --notes-file docs/release-notes.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dmg
+          path: build/*.dmg
