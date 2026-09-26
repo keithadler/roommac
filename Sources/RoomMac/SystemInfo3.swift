@@ -162,9 +162,13 @@ enum SystemInfo3 {
     }
 
     @MainActor
-    static func setDefault(_ slot: DefaultAppSlot, to appPath: String, done: @escaping (String?) -> Void) {
+    static func setDefault(_ slot: DefaultAppSlot, to appPath: String, done: @escaping @MainActor @Sendable (String?) -> Void) {
         let app = URL(fileURLWithPath: appPath)
-        let handler: (Error?) -> Void = { e in Task { @MainActor in done(e?.localizedDescription) } }
+        // NSWorkspace calls back on a background queue and needs a @Sendable handler; hop to the main actor.
+        let handler: @Sendable (Error?) -> Void = { e in
+            let message = e?.localizedDescription
+            Task { @MainActor in done(message) }
+        }
         switch slot.key {
         case "http": NSWorkspace.shared.setDefaultApplication(at: app, toOpenURLsWithScheme: "http", completion: handler)
         case "mailto": NSWorkspace.shared.setDefaultApplication(at: app, toOpenURLsWithScheme: "mailto", completion: handler)

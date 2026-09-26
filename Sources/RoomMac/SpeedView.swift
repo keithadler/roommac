@@ -430,7 +430,7 @@ struct StorageCard: View {
                     .font(.callout).foregroundStyle(.secondary)
             }
             VStack(alignment: .leading, spacing: 8) {
-                row("Optimise Mac Storage", "Keeps only recent iCloud Drive files on this Mac and fetches older ones when opened.", "com.apple.systempreferences.AppleIDSettings:icloud")
+                row("Optimize Mac Storage", "Keeps only recent iCloud Drive files on this Mac and fetches older ones when opened.", "com.apple.systempreferences.AppleIDSettings:icloud")
                 row("Empty Trash automatically", "Removes anything that has sat in the Trash for 30 days.", "com.apple.settings.Storage")
                 row("Download only recent Mail attachments", "In Mail > Settings > Accounts, stops old attachments filling the disk.", nil)
             }

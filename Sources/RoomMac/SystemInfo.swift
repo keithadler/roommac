@@ -199,9 +199,9 @@ enum SystemInfo {
         let known: [(String, String)] = [
             ("mds_stores", String(localized: "Spotlight is indexing your files")),
             ("mdworker", String(localized: "Spotlight is indexing your files")),
-            ("photoanalysisd", String(localized: "Photos is analysing your pictures for faces and places")),
-            ("photolibraryd", String(localized: "Photos is organising its library")),
-            ("mediaanalysisd", String(localized: "macOS is analysing photos and videos")),
+            ("photoanalysisd", String(localized: "Photos is analyzing your pictures for faces and places")),
+            ("photolibraryd", String(localized: "Photos is organizing its library")),
+            ("mediaanalysisd", String(localized: "macOS is analyzing photos and videos")),
             ("backupd", String(localized: "Time Machine is backing up")),
             ("bird", String(localized: "iCloud Drive is syncing")),
             ("cloudd", String(localized: "iCloud is syncing")),
@@ -369,7 +369,8 @@ enum SystemInfo {
                   let items = obj[type] as? [[String: Any]] else { continue }
             for controller in items {
                 for drive in (controller["_items"] as? [[String: Any]]) ?? [] {
-                    if let s = (drive["spnvme_smart_status"] ?? drive["spsata_smart_status"]) as? String {
+                    // macOS 27 reports plain "smart_status" for NVMe drives; older releases prefixed it.
+                    if let s = (drive["smart_status"] ?? drive["spnvme_smart_status"] ?? drive["spsata_smart_status"]) as? String {
                         return s.lowercased().contains("verified")
                     }
                 }

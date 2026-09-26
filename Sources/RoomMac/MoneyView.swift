@@ -243,7 +243,7 @@ struct StorageMathCard: View {
                         : "Even after a full clean this disk is tight. An external SSD, about $\(Int(MoneyInfo.externalSSDPerTB)) per TB, is the cheapest fix; a bigger Mac is the most expensive.")
                 }
                 if let ic = s.icloudLocalBytes, ic > 1_000_000_000 {
-                    Text("iCloud Drive keeps \(Bytes.string(ic)) on this Mac. Optimise Mac Storage lets macOS keep only recent files here and fetch the rest when opened.").font(.callout).foregroundStyle(.secondary)
+                    Text("iCloud Drive keeps \(Bytes.string(ic)) on this Mac. Optimize Mac Storage lets macOS keep only recent files here and fetch the rest when opened.").font(.callout).foregroundStyle(.secondary)
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     Text("For scale, iCloud storage plans (US, 2026):").font(.caption).foregroundStyle(.secondary)

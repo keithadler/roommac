@@ -445,11 +445,17 @@ enum SystemInfo2 {
         return out
     }
 
+    /// pmset appends a note when something is holding a setting off, e.g. "10 (display sleep
+    /// prevented by caffeinate)", so read the number at the start rather than the whole value.
+    static func leadingInt(_ value: String) -> Int? {
+        Int(value.prefix { $0.isNumber })
+    }
+
     static func power() -> PowerInfo {
         let batt = SystemInfo.run("/usr/bin/pmset", ["-g", "batt"], timeout: 10)
         let s = pmsetSettings()
         var info = PowerInfo(onBattery: nil, percent: nil, charging: nil, lowPowerMode: (s["lowpowermode"]).map { $0 == "1" },
-                             displaySleepMinutes: s["displaysleep"].flatMap { Int($0) }, settings: s)
+                             displaySleepMinutes: s["displaysleep"].flatMap(leadingInt), settings: s)
         if batt.contains("Battery Power") { info.onBattery = true } else if batt.contains("AC Power") { info.onBattery = false }
         if let m = batt.range(of: #"(\d+)%"#, options: .regularExpression) { info.percent = Int(batt[m].dropLast()) }
         if batt.contains("charging") && !batt.contains("discharging") { info.charging = true } else if batt.contains("discharging") { info.charging = false }

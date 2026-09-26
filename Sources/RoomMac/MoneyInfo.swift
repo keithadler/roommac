@@ -251,10 +251,10 @@ enum MoneyInfo {
         var score = 0    // higher is worse
         var fixes: [String] = []
         if hw.appleSilicon {
-            reasons.append(String(localized: "\(hw.chip) is current-generation hardware. Apple supports these for many years of macOS updates."))
+            reasons.append(String(localized: "\(hw.chip) is Apple silicon. Apple supports these for many years of macOS updates."))
         } else {
             score += 2
-            reasons.append(String(localized: "Intel Mac. Apple has said macOS 26 is the last version for Intel, so security updates continue for a while but new features won't."))
+            reasons.append(String(localized: "Intel Mac. macOS 26 was the last version for Intel Macs; macOS 27 needs Apple silicon. Security updates continue for a while, but new features won't come."))
         }
         if let m = memory {
             if m.pressure >= 4 { score += 2; reasons.append(String(localized: "Memory is critical right now. With \(hw.memoryGB) GB, this Mac is short of memory for what you run.")); fixes.append(String(localized: "quit apps you're not using, or use fewer browser tabs")) }
